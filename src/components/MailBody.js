@@ -15,6 +15,7 @@ function MailBody() {
         if(listStatus === 'idle'){
             dispatch(getMail());
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     },[])
 
     const getDate = (date) => {
