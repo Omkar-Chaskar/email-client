@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
 import "../style/mailbody.css";
 import { useSelector, useDispatch } from 'react-redux';
-import { selectAllMails, getMailStatus, getMailError, getMail } from '../features/mail/mailSlice';
+import { selectAllMails, getMailStatus, getMailError, getMail, filterUnread, filterRead, filterFavorite, filterMails} from '../features/mail/mailSlice';
+import { selectBody, getBody} from '../features/body/bodySlice';
+import { addToRead } from '../features/read/readSlice';
+import Slave from './Slave';
 
 function MailBody() {
 
@@ -10,6 +13,10 @@ function MailBody() {
     const list = useSelector(selectAllMails);
     const listStatus = useSelector(getMailStatus);
     const listError = useSelector(getMailError);
+    const body = useSelector(selectBody);
+    const favorite = useSelector((store) => store.favorite);
+    const read = useSelector((store) => store.read);
+    const filterMail = useSelector(filterMails);
 
     useEffect(()=> {
         if(listStatus === 'idle'){
@@ -41,18 +48,22 @@ function MailBody() {
         hours = hours ? hours : 12; // the hour '0' should be '12'
         minutes = minutes < 10 ? '0'+minutes : minutes;
         let strTime = hours + ':' + minutes + ' ' + ampm;
-        console.log(d);
-        console.log(strTime);
         return strTime;
     }
 
-    let content;
+    let newBody = [];
+
+    let newList = filterMail.length>0 ? filterMail : list;
+
+    newBody = newList.filter( list => list.id === body.id );
+
+    let mailList;
     if(listStatus === 'loading'){
-        content = <p>"Loading...."</p>
+        mailList = <p>"Loading...."</p>
     } else if(listStatus === 'idle'){
-        content = list.map(mail => {
+        mailList = newList.map(mail => {
             return (
-                <article className='mail-section read' key={mail.id}>
+                <article className={read?.read?.some((item) => item.id === mail.id)?'mail-section read':'mail-section'} key={mail.id} onClick={()=> handleClickEvent(mail)}>
                     <div className='avatar-section'>
                         <p className='avatar'>{mail.from.name.toUpperCase().split("")[0]}</p>
                     </div>
@@ -73,16 +84,24 @@ function MailBody() {
                                 <span className='mail-date'>{getDate(mail.date)}</span>
                                 <span className='mail-time'>{getTime(mail.date)}</span>
                             </section>
-                            <section className='mail-mark'>
+                            {
+                            favorite?.favorite?.some((item) => item.id === mail.id) ? ( <section className='mail-mark'>
                                 <h5>Favorite</h5>
                             </section>
+                            ) : (<></>)
+                            }
                         </section>
                     </section>
                 </article>
             )
         })
     } else if(listStatus === 'fail'){
-        content = <p>{listError}</p>
+        mailList = <p>{listError}</p>
+    }
+
+    const handleClickEvent = (mail) => {
+        dispatch(getBody(mail));
+        dispatch(addToRead(mail));
     }
 
   return (
@@ -92,13 +111,18 @@ function MailBody() {
                 <h4>Filter By:</h4>
             </div>
             <ul className='filter-menu'>
-                <li><button>Unread</button></li>
-                <li><button>Read</button></li>
-                <li><button>Favorites</button></li>
+                <li><button onClick={()=>{ dispatch(filterUnread(read.read));}}>Unread</button></li>
+                <li><button onClick={()=>{ dispatch(filterRead(read.read));}}>Read</button></li>
+                <li><button onClick={()=>{ dispatch(filterFavorite(favorite.favorite));}}>Favorites</button></li>
             </ul>
         </nav>
-        <section>
-            { content }
+        <section className={newBody.length > 0 ? 'master-slave-flex': 'master-slave' }>
+            <div className='master'>
+                <div className='master-slide'>
+                    { mailList }
+                </div>
+            </div>
+            < Slave />
         </section>
     </main>
   )

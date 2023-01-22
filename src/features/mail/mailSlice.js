@@ -3,6 +3,7 @@ import { fetchMail } from './mailAPI';
 
 const initialState = {
     list: [],
+    filter: [],
     status: 'idle',
     error: null
 };
@@ -20,10 +21,18 @@ export const mailSlice = createSlice({
     name: 'mail',
     initialState,
     reducers: {
-        addToRead: {
-            reducer(state, action){
-                state.list.push(action.payload);
-            }
+        filterUnread:(state, action) => {
+          const unreadList = state.list.filter((list) => action.payload.map(item => list.id !== item.id));
+          // const restList = state.list.filter((list) => action.payload.map(item => list.id === item.id));
+          state.filter = [...unreadList];
+        },
+        filterRead:(state, action) => {
+          // const restList = state.list.filter((list) => action.payload.map(item => list.id !== item.id));
+          state.filter = [...action.payload];
+        },
+        filterFavorite:(state, action) => {
+          // const restList = state.list.filter((list) => action.payload.map(item => list.id !== item.id));
+          state.filter = [...action.payload];
         }
     },
     extraReducers: (builder) => {
@@ -41,8 +50,11 @@ export const mailSlice = createSlice({
       },
 });
 
+export const { filterUnread, filterRead, filterFavorite } = mailSlice.actions;
+
 export const selectAllMails = (state) => state.mail.list;
 export const getMailStatus = (state) => state.mail.status;
 export const getMailError = (state) => state.mail.error;
+export const filterMails = (state) => state.mail.filter;
 
 export default mailSlice.reducer;

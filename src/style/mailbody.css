@@ -37,6 +37,41 @@ li button:hover {
 
   /* -----------------Mail Body------------------- */
 
+.master {
+    width: 100%;
+    min-width: 500px;
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+}
+
+/* .master-slide {
+    position: fixed;
+    top: 10;
+    left: 10;
+    min-width: 500px;
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+} */
+
+.master-slide {
+    min-width: 500px;
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    row-gap: 30px;
+}
+
+.master-slide::-webkit-scrollbar{
+    display: none;
+}
+
 section > .mail-section {
     background-color: #FFF;
     border: #CFD2DC solid 2px;
@@ -68,7 +103,7 @@ section > .mail-section {
 
 .mail-from, .mail-subject, .mail-footer, .mail-time, .mail-mark {
     align-items: center;
-    height: 25px;
+    height: 30px;
 }
 
 .mail-from-title2, .mail-subject-title2, .mail-time {
@@ -89,5 +124,61 @@ section > .mail-section {
 }
 
 .read {
-    background-color: #F2F2F2 !important;
+    background-color: #FFF !important;
+    border-radius: 10px;
+    border: 2px solid #CFD2DC;
+}
+
+.read:hover {
+    border: 2px solid #E54065;
+    cursor: pointer;
+}
+
+/* ---------------------- Slave Section ------------------------- */
+
+.slave {
+    overflow: auto;
+}
+
+.slave::-webkit-scrollbar{
+    display: none;
+}
+
+.body-section {
+    min-height: 85vh;
+    padding-right: 4rem !important;
+}
+
+.slave-body {
+    display: flex;
+    flex-direction: column;
+}
+
+.body-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.body-mark {
+    align-content: center;
+    margin-top: 25px;
+}
+
+.fav-button {
+    background-color: #E54065;
+    color: #FFF;
+    padding: 5px 20px;
+    border-radius: 20px;
+}
+
+.body-content {
+    margin: 20px 2px;
+}
+
+.master-slave-flex {
+    display: flex;
+    flex-direction: row;
+    column-gap: 30px;
+    flex-grow: 1;
 }
